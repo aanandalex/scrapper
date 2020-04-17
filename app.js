@@ -28,20 +28,6 @@ mongoose.connect('mongodb://anand:unicornb1331@cluster0-shard-00-00-0tquo.mongod
     console.log("Connection Failed!!!");
 });
 
-// mongoose.connect("mongodb+srv://anand:unicornb1331@cluster0-0tquo.mongodb.net/reutersIndiaDB", {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     useCreateIndex: true
-// })
-//     .then(() => {
-//         console.log("Connected to DataBase");
-//     })
-//     .catch((error) => {
-//         console.log(error);
-//         console.log("Connection Failed!!!");
-//     });
-//Database connection ends here//
-
 //database schema//
 const newsSchema = mongoose.Schema({
     date: {
