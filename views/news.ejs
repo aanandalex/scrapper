@@ -10,6 +10,12 @@
     <title><%= title %></title>
   </head>
   <body>
+    <style>
+      p {
+        font-size: large;
+        font-family: 'Courier New', Courier, monospace;
+      }
+    </style>
     <% if (news) { %>
         <% for(var i=0; i < news.length; i++) { %>
             <div class="container">
