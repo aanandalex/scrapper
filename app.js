@@ -4,16 +4,15 @@ const cheerio = require('cheerio');
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const bodyParser = require('body-parser');
-var moment = require('moment');
+const moment = require('moment');
 const app = express();
+const port = 3000;
+
 app.set('view engine', 'ejs');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-const port = 3000;
 
 var topStoriesLink = [];
-
-
 
 //DataBase Connection//
 mongoose.connect('mongodb://anand:unicornb1331@cluster0-shard-00-00-0tquo.mongodb.net:27017,cluster0-shard-00-01-0tquo.mongodb.net:27017,cluster0-shard-00-02-0tquo.mongodb.net:27017/reutersTopNews?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority', {
@@ -47,8 +46,7 @@ const newsSchema = mongoose.Schema({
     imageUrl: {
         type: String
     }
-});
-//database schema ends here
+});//database schema ends here
 
 //unique validator
 newsSchema.plugin(uniqueValidator);
