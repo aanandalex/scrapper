@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const bodyParser = require('body-parser');
 const moment = require('moment');
+// const moscowtimes = require('./moscowtimes');
 const app = express();
 const port = 3000;
 
@@ -58,7 +59,7 @@ function refresh() {
     console.log('updated at ' + moment(new Date()).format('hh:mm A'));
     axios.get('https://in.reuters.com/news/top-news')
   .then(function (response) {
-      console.log(response.status);
+      console.log('reuters ' +response.status);
     if (response.status == 200) {
         const $ = cheerio.load(response.data);
         const links = [];
