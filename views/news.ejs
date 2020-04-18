@@ -21,7 +21,8 @@
             <div class="container">
                 <h1 style="text-align: center;"><%= news[i].heading %></h1>
                 <img src="<%= news[i].imageUrl %>" alt="" style="width: 50%;display: block;  margin-left: auto;  margin-right: auto;  width: 50%;">
-                <p style="text-align: justify;"><%= news[i].article %></p>
+                <p style="text-align: justify;"><%= news[i].article %>'\n'</p>
+                <br>
             </div>
         <% } %>
      <% } %>
