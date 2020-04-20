@@ -95,9 +95,9 @@ function refresh() {
     }, 5000);
 }
 
-// setInterval(() => {
-//    refresh(); 
-// }, 150000);
+setInterval(() => {
+   refresh(); 
+}, 150000);
 
 function getEachStory(link) {
     axios.get('https://in.reuters.com' + link)
@@ -148,7 +148,7 @@ function toSaveNewsToDB(newsObject) {
     });
 
     news.save().then(() => {
-        console.log('saved successfully');
+        console.log('saved successfully' + newsObject.heading);
     }).catch((error) => {
         console.log('error in saving', error);
     });
