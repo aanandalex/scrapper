@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const bodyParser = require('body-parser');
 const moment = require('moment');
-// const moscowtimes = require('./moscowtimes');
+//const news = require('./news.js');
 const app = express();
 const port = 3000;
 
@@ -13,7 +13,6 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var topStoriesLink = [];
 
 //DataBase Connection//
 mongoose.connect('mongodb://anand:unicornb1331@cluster0-shard-00-00-0tquo.mongodb.net:27017,cluster0-shard-00-01-0tquo.mongodb.net:27017,cluster0-shard-00-02-0tquo.mongodb.net:27017/reutersTopNews?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority', {
@@ -96,9 +95,9 @@ function refresh() {
     }, 5000);
 }
 
-setInterval(() => {
-   refresh(); 
-}, 150000);
+// setInterval(() => {
+//    refresh(); 
+// }, 150000);
 
 function getEachStory(link) {
     axios.get('https://in.reuters.com' + link)
@@ -169,14 +168,87 @@ function toCheckLinkInDB(newsBody) {
     })
 }
 
+function getStoryFromRussia(link) {
+    axios.get(link)
+    .then((response) => {
+        if (response.status == 200) {
+            const $ = cheerio.load(response.data);
+            const article = [];
+            $('span').each((i,el) => {
+                article[i] = $(el).text();
+            });
+            var image = null;
+            if ($('.featured-image img').attr('src') != undefined) {
+                image = $('.featured-image img').attr('src');
+            }
+            const moscowNews = {
+                "link": link,
+                "heading": $('.article__header  h1').text(),
+                "article": article,
+                "imageUrl": image
+            }
+            toCheckLinkInDB(moscowNews);
+        }
+    })
+    .catch((error) => {
+        if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          } else if (error.request) {
+            console.log(error.request);
+          } else {
+            console.log('Error', error.message);
+          }
+          console.log(error.config);
+    })
+}
+
+
+function toCallMoscow() {
+    axios.get('https://www.themoscowtimes.com/news')
+        .then((response) => {
+            console.log('moscow times '+ response.status);
+        if(response.status == 200) {
+                const $ = cheerio.load(response.data);
+                const links = [];
+                $('.cluster a').each((i,li) => {
+                    links[i] = $(li).attr('href');
+                });
+                moscowLinks = Array.from(new Set(links));
+        }
+        })
+        .catch((error) => {
+            if (error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                console.log(error.request);
+            } else {
+                console.log('Error', error.message);
+            }
+            console.log(error.config);
+        })
+
+    setTimeout(() => {
+        moscowLinks.forEach(link => {
+            getStoryFromRussia(link);
+        });
+    }, 5000);
+}
+
+setInterval(() => {
+    toCallMoscow();
+}, 300000);
+
 //webside
-app.listen(port, () => console.log(`app listening at http://localhost:${port}`))
+app.listen(port, () => console.log(`app listening at http://localhost:${port} `+ moment(new Date()).format('hh:mm A')))
 
 app.get('/', function (req, res) {
     newsCollection.find({date: moment(new Date()).format("DD/MM/YYYY")}).sort({ _id: -1 })
     .then((resp) => {
         console.log(resp.length);
-        //res.render('index', { title: 'Reuters', news: resp });
         res.render('news', {title: 'Reuters', news: resp});
     })
     .catch((error) => {
